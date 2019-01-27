@@ -1,0 +1,59 @@
+import pygame
+from terrain.floor import floor
+from .character import character
+
+class player(character):
+
+    facingDir = [0, 0]
+
+    def __init__(self, startPos, playerSize, scale):
+        self.position = startPos
+        print(self.position, startPos)
+        playerSize *= scale
+        self.playerSize = playerSize
+        self.playerSurf = pygame.Surface((playerSize, playerSize), pygame.SRCALPHA, 32)
+        self.center = [playerSize/2, playerSize/2]
+        self.actionBuffer = []
+        self.load()
+    
+    def load(self):
+        #load player attributes and data to substitute __init__
+        self.speed = 1
+        pass
+
+    def addAction(self, actionType, action):
+        #consider implementing player action buffer vs handling in update method
+        if actionType == 'move':
+            #print(actionType, action)
+            self.move(action)
+        elif actionType =='attack':
+            pass
+
+    def update(self, **kwargs):
+        #moveDir is a unit vector used to determine if the player is moving and update the player position
+        #moveDir = kwargs.get('moveDir')
+        #damage and effects are not implemented at this moment
+        #damage = kwargs.get('damage')
+        pass
+
+    def render(self, displaySurface):
+        pygame.draw.circle(self.playerSurf, (255, 0, 0), self.center, self.playerSize/2, 0)
+        displaySurface.blit(self.playerSurf, (self.position[0] - self.playerSize/2, self.position[1] - self.playerSize/2))
+        pass
+
+    def move(self, direction):
+        if direction == 'UP':
+            uvect = (0, -1)
+        elif direction == 'DOWN':
+            uvect = (0, 1)
+        elif direction == 'LEFT':
+            uvect = (-1, 0)
+        elif direction == 'RIGHT':
+            uvect = (1, 0)
+        
+        facingDir = uvect
+        self.position = self.position[0] + uvect[0] * self.speed * self.playerSize, self.position[1] + uvect[1] * self.speed * self.playerSize
+
+    def attack(self, skill):
+        
+        pass
