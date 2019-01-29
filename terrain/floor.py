@@ -2,11 +2,10 @@ import pygame
 
 class floor():
       
-    def __init__(self, screenSize):
+    def __init__(self, screen):
         #pass
-        self.mapSurface = pygame.Surface(screenSize)
-        self.mapSize = self.width, self.height = screenSize
-        self.screenCenter = self.width/2, self.height/2
+        self.mapSurface = pygame.Surface(screen.size)
+        self.mapRect = pygame.Rect(screen.topleft, screen.size)
 
     def load(self, scale):
         self.scale = scale
@@ -22,13 +21,13 @@ class floor():
                 ]
 
         #implement map grid for terrain and initial movement mechanics
-        gridStartX = self.screenCenter[0] - self.visibleX/2 * self.gridDimensions
-        gridStartY = self.screenCenter[1] - self.visibleY/2 * self.gridDimensions
+        gridStartX = self.mapRect.center[0] - self.visibleX/2 * self.gridDimensions
+        gridStartY = self.mapRect.center[1] - self.visibleY/2 * self.gridDimensions
         self.floorGridLines = [
-                [(gridStartX + col * self.gridDimensions, 0), (gridStartX + col * self.gridDimensions, self.mapSize[1])] for col in range(self.visibleX)
+                [(gridStartX + col * self.gridDimensions, 0), (gridStartX + col * self.gridDimensions, self.mapRect.height)] for col in range(self.visibleX)
                 ] 
         floorGridLines_hori = [
-                [(0, gridStartY + row * self.gridDimensions), (self.mapSize[0], gridStartY + row * self.gridDimensions)] for row in range(self.visibleY)
+                [(0, gridStartY + row * self.gridDimensions), (self.mapRect.width, gridStartY + row * self.gridDimensions)] for row in range(self.visibleY)
                 ]
         for pointPair in floorGridLines_hori:
             self.floorGridLines.append(pointPair)
@@ -44,4 +43,4 @@ class floor():
 
         #draw grid centered dots
         #[[pygame.draw.circle(self.mapSurface, (255, 255, 255), coord, 5, 0) for coord in col] for col in self.floorGrid]
-        displaySurf.blit(self.mapSurface, (0, 0))
+        displaySurf.blit(self.mapSurface, self.mapRect.topleft)

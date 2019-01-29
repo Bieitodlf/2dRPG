@@ -2,13 +2,13 @@ import pygame
 from dynamicElement import dynamicElement
 
 class character(dynamicElement):
-    def __init__(self, startPos, size, scale):
-        dynamicElement.__init__(self, startPos, size, scale)
-        self.load()
+    def __init__(self, startPos, size, scale, isPhysEnabled, physEnabled):
+        dynamicElement.__init__(self, startPos, size, scale, isPhysEnabled, physEnabled)
+        self.loadCharacter()
     
-    def load(self):
+    def loadCharacter(self):
         #implement loader from file
-        self.speed = 1
+        self.speed = 0.5
         self.health = 100
 
     def move(self, direction):
@@ -22,7 +22,7 @@ class character(dynamicElement):
             uvect = (1, 0)
         
         facingDir = uvect
-        self.position = self.position[0] + uvect[0] * self.speed * self.size, self.position[1] + uvect[1] * self.speed * self.size
+        self.rect.center = self.rect.center[0] + uvect[0] * self.speed * self.rect.width, self.rect.center[1] + uvect[1] * self.speed * self.rect.width
 
     def attack(self, skill):
         

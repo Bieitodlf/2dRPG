@@ -2,24 +2,28 @@ import pygame
 from pygame.locals import * 
 from terrain.floor import floor
 from character.player import player
+from character.character import character
 
 class App:
     def __init__(self):
         self._running = True
         self._display_surf = None
         self.size = self.width, self.height = 1920, 1080
-        self.center = self.centerX, self.centerY = self.width/2, self.height/2
+        self.screenRect = pygame.Rect((0, 0), self.size)
 
     def on_init(self):
         pygame.init()
-        self._display_surf = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
+        self._display_surf = pygame.display.set_mode(self.screenRect.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         self.clock = pygame.time.Clock()
         self._running = True
         # call map loader in the future this responds to event
-        self.terrain = floor(self.size)
+        self.inGame = pygame.sprite.Group()
+        self.physEnabled = pygame.sprite.Group()
+        self.terrain = floor(self.screenRect)
         self.scale = 100 #world scale, make adjustable in the future
         self.terrain.load(self.scale)
-        self.player = player(self.center, 1, self.scale) #pass center screen, playerSize and scale
+        self.player = player(self.screenRect.center, 1, self.scale, True, self.physEnabled) #pass center screen, playerSize and scale
+        self.enemy = character((self.screenRect.center[0] - 200, self.screenRect.center[1] - 200), 1, self.scale, True, self.physEnabled)
         self.actionBuffer = [] #stores actions onto a buffer to send to objects
 
     def on_event(self, event):
@@ -53,6 +57,9 @@ class App:
  
             else:
                 print("app.py: wrong number of actionElements in actionBuffer")
+
+        for element in self.physEnabled:
+            element.update(self.physEnabled)
             
         # process player events from on_event()
 
@@ -61,6 +68,7 @@ class App:
         # draw map, players
         self.terrain.render(self._display_surf)
         self.player.render(self._display_surf)
+        self.enemy.render(self._display_surf)
         pygame.display.flip()
 
     def on_cleanup(self):

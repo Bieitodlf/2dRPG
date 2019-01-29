@@ -6,9 +6,8 @@ class player(character):
 
     facingDir = [0, 0]
 
-    def __init__(self, startPos, playerSize, scale):
-        character.__init__(self, startPos, playerSize, scale)
-        self.size
+    def __init__(self, startPos, playerSize, scale, isPhysEnabled, physEnabled):
+        character.__init__(self, startPos, playerSize, scale, isPhysEnabled, physEnabled)
         self.actionBuffer = []
     
     def addAction(self, actionType, action):
