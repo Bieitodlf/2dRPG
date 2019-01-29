@@ -2,8 +2,8 @@ import pygame
 from dynamicElement import dynamicElement
 
 class character(dynamicElement):
-    def __init__(self, startPos, size, scale, isPhysEnabled, physEnabled):
-        dynamicElement.__init__(self, startPos, size, scale, isPhysEnabled, physEnabled)
+    def __init__(self, startPos, size, scale, isPhysEnabled, physEnabled, momentPriority=2):
+        dynamicElement.__init__(self, startPos, size, scale, isPhysEnabled, physEnabled, momentPriority)
         self.loadCharacter()
     
     def loadCharacter(self):
@@ -27,3 +27,6 @@ class character(dynamicElement):
     def attack(self, skill):
         
         pass
+
+    def __del__(self):
+        dynamicElement.__del__(self)

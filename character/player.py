@@ -7,7 +7,7 @@ class player(character):
     facingDir = [0, 0]
 
     def __init__(self, startPos, playerSize, scale, isPhysEnabled, physEnabled):
-        character.__init__(self, startPos, playerSize, scale, isPhysEnabled, physEnabled)
+        character.__init__(self, startPos, playerSize, scale, isPhysEnabled, physEnabled, 3)
         self.actionBuffer = []
     
     def addAction(self, actionType, action):
@@ -17,3 +17,6 @@ class player(character):
             self.move(action)
         elif actionType =='attack':
             pass
+
+    def __del__(self):
+        character.__del__(self)

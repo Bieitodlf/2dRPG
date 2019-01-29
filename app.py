@@ -58,8 +58,11 @@ class App:
             else:
                 print("app.py: wrong number of actionElements in actionBuffer")
 
+        colliders = pygame.sprite.Group()
+        [colliders.add(i) for i in self.physEnabled]
+
         for element in self.physEnabled:
-            element.update(self.physEnabled)
+            element.checkCollision(colliders)
             
         # process player events from on_event()
 
