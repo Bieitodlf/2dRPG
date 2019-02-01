@@ -22,8 +22,8 @@ class App:
         self.terrain = floor(self.screenRect)
         self.scale = 100 #world scale, make adjustable in the future
         self.terrain.load(self.scale)
-        self.player = player(self.screenRect.center, 1, self.scale, True, self.physEnabled) #pass center screen, playerSize and scale
-        self.enemy = character((self.screenRect.center[0] - 200, self.screenRect.center[1] - 200), 1, self.scale, True, self.physEnabled)
+        self.player = player(self.screenRect.center, 1, self.scale, self.physEnabled, self.inGame) #pass center screen, playerSize and scale
+        self.enemy = character((self.screenRect.center[0] - 200, self.screenRect.center[1] - 200), 1, self.scale, self.physEnabled, self.inGame)
         self.actionBuffer = [] #stores actions onto a buffer to send to objects
 
     def on_event(self, event):
@@ -48,7 +48,7 @@ class App:
     def on_loop(self):
         while (len(self.actionBuffer) != 0):
             actionElements = self.actionBuffer.pop().split(".")
-            print(actionElements)
+            #print(actionElements)
             if len(actionElements) == 3:
                 element, actionType, action = actionElements[0], actionElements[1], actionElements[2]
                 if element == 'player':
@@ -62,16 +62,16 @@ class App:
         [colliders.add(i) for i in self.physEnabled]
 
         for element in self.physEnabled:
-            element.checkCollision(colliders)
-            
+            element.update(colliders)
+
         # process player events from on_event()
 
     def on_render(self):
         #pass
         # draw map, players
         self.terrain.render(self._display_surf)
-        self.player.render(self._display_surf)
-        self.enemy.render(self._display_surf)
+        for element in self.inGame.sprites():
+            element.render(self._display_surf)
         pygame.display.flip()
 
     def on_cleanup(self):
@@ -86,6 +86,7 @@ class App:
                 self.on_event(event)
             self.on_loop()
             self.on_render()
+            #pygame.time.wait(1)
 
         self.on_cleanup()
 
