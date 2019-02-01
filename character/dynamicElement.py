@@ -11,6 +11,7 @@ class dynamicElement(pygame.sprite.Sprite):
         self.rect = pygame.Rect((0, 0), (size, size))
         self.rect.center = startPos
         self.positionVect = pygame.math.Vector2(self.rect.center)
+        self.facingDir = pygame.math.Vector2(0, -1)
         pygame.sprite.Sprite.__init__(self)
         self.inGame = inGame
         inGame.add(self)
@@ -24,10 +25,7 @@ class dynamicElement(pygame.sprite.Sprite):
         #self.add(inGame)
 
     def update(self, *args):
-        #moveDir is a unit vector used to determine if the player is moving and update the player position
-        #moveDir = kwargs.get('moveDir')
         #damage and effects are not implemented at this moment
-        #damage = kwargs.get('damage')
         if len(args) > 0:
             self.checkCollision(args[0])
         self.rect.center = self.positionVect.x, self.positionVect.y
@@ -50,16 +48,20 @@ class dynamicElement(pygame.sprite.Sprite):
         colliders.remove(self)
         #print(colliders)
         for collider in pygame.sprite.spritecollide(self, colliders, False):
+            collider.checkCollision(colliders)
             self.handleCollision(collider)
-            colliders.remove(collider)
-        colliders.empty()
 
     def handleCollision(self, collider):
-        if collider in superGroup:
-            pass
+        if (self in collider.subGroup or self in collider.superGroup):
+            print(collider.__class__.__name__, "in subgroup of", self.__class__.__name__)
         elif self.breaksOnImpact:
+            print(self.__class__.__name__, "breaks on impact with", collider.__class__.__name__)
             self.destroy()
+        elif collider.breaksOnImpact:
+            print(collider.__class__.__name__, "breaks on impact with", self.__class__.__name__)
+            collider.destroy()
         elif collider.momentPriority >= self.momentPriority:
+            print(collider.__class__.__name__, "collides with", self.__class__.__name__)
             overlap = pygame.math.Vector2(self.positionVect.x, self.positionVect.y)
             overlap -= collider.positionVect
             overlap.normalize_ip()
@@ -69,6 +71,6 @@ class dynamicElement(pygame.sprite.Sprite):
         elif collider.momentPriority < self.momentPriority:
             collider.handleCollision(self)
             #collider.move(overlap * -1)
-            print(collider, self, self.positionVect)
+            print(collider.__class__.__name__,"is pushed by",  self.__class__name__, "at", self.positionVect)
         else:
             pass

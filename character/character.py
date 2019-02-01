@@ -13,6 +13,7 @@ class character(dynamicElement):
         self.health = 100
         self.subGroup = pygame.sprite.Group()
         self.subGroup.add(self)
+        self.superGroup = pygame.sprite.Group()
 
     def autoUpdate(self):
         pass
@@ -43,5 +44,6 @@ class character(dynamicElement):
     def attack(self, skill):
         if skill == 'SHOOT':
             projectile(self.rect.center, 1, self.scale, self.facingDir, 5, self.physEnabled, self.inGame, self.subGroup, 1, 'kinetic')
+            #print(self.subGroup.sprites())
         pass
 

@@ -23,7 +23,7 @@ class App:
         self.scale = 100 #world scale, make adjustable in the future
         self.terrain.load(self.scale)
         self.player = player(self.screenRect.center, 1, self.scale, self.physEnabled, self.inGame) #pass center screen, playerSize and scale
-        self.enemy = character((self.screenRect.center[0] - 200, self.screenRect.center[1] - 200), 1, self.scale, self.physEnabled, self.inGame)
+        self.enemy = character((self.screenRect.center[0], self.screenRect.center[1] - 200), 1, self.scale, self.physEnabled, self.inGame)
         self.actionBuffer = [] #stores actions onto a buffer to send to objects
 
     def on_event(self, event):
@@ -63,7 +63,7 @@ class App:
 
         for element in self.physEnabled:
             element.update(colliders)
-
+        #self.player.addAction('attack', 'SHOOT')
         # process player events from on_event()
 
     def on_render(self):
@@ -86,7 +86,7 @@ class App:
                 self.on_event(event)
             self.on_loop()
             self.on_render()
-            #pygame.time.wait(1)
+            pygame.time.delay(100)
 
         self.on_cleanup()
 
