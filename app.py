@@ -6,9 +6,6 @@ from character.character import character
 
 class App:
 
-    actionBuffer = [] #stores actions onto a buffer to send to objects
-
-
     def __init__(self):
         self._running = True
         self._display_surf = None
