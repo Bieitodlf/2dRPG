@@ -1,6 +1,7 @@
 import pygame
 from dynamicElement import dynamicElement
 from projectile import projectile
+from bomb import bomb
 
 class character(dynamicElement):
     def __init__(self, startPos, size, scale, physEnabled, inGame, momentPriority=5):
@@ -15,8 +16,12 @@ class character(dynamicElement):
         self.subGroup.add(self)
         self.superGroup = pygame.sprite.Group()
 
-    def autoUpdate(self):
+    def autoUpdate(self, frameTime):
         pass
+
+    def render(self, displaySurface):
+        pygame.draw.circle(self.surf, (255, 0, 0), (self.rect.center[0] - self.rect.topleft[0], self.rect.center[1] - self.rect.topleft[1]), self.rect.width/2, 0)
+        super(character, self).render(displaySurface)
 
     def addAction(self, actionType, action):
         #consider implementing player action buffer vs handling in update method
@@ -24,7 +29,7 @@ class character(dynamicElement):
             #print(actionType, action)
             self.actionMove(action)
         elif actionType =='attack':
-            self.attack('SHOOT')
+            self.attack(action)
 
     #reimplement actionMove() to allow alternative control method
     def actionMove(self, direction):
@@ -43,7 +48,13 @@ class character(dynamicElement):
 
     def attack(self, skill):
         if skill == 'SHOOT':
-            projectile(self.rect.center, 1, self.scale, self.facingDir, 5, self.physEnabled, self.inGame, self.subGroup, 1, 'kinetic')
+            projectile(self.rect.center, 0.5, self.scale, self.facingDir, 5, self.physEnabled, self.inGame, self.subGroup, self, 1, 'kinetic')
             #print(self.subGroup.sprites())
+        elif skill == 'THROW':
+            bomb(self.rect.center, 1, self.scale, self.facingDir, 5, self.physEnabled, self.inGame, self.subGroup, self, 1, 'explosive')
+        elif skill == 'MELE':
+            pass
+
+    def dealDamage(self):
         pass
 

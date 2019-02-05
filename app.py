@@ -5,6 +5,10 @@ from character.player import player
 from character.character import character
 
 class App:
+
+    actionBuffer = [] #stores actions onto a buffer to send to objects
+
+
     def __init__(self):
         self._running = True
         self._display_surf = None
@@ -24,7 +28,8 @@ class App:
         self.terrain.load(self.scale)
         self.player = player(self.screenRect.center, 1, self.scale, self.physEnabled, self.inGame) #pass center screen, playerSize and scale
         self.enemy = character((self.screenRect.center[0], self.screenRect.center[1] - 200), 1, self.scale, self.physEnabled, self.inGame)
-        self.actionBuffer = [] #stores actions onto a buffer to send to objects
+        
+        self.actionBuffer = [] #stores actions onto a buffer to send to object
 
     def on_event(self, event):
         if event.type == pygame.QUIT:
@@ -42,9 +47,11 @@ class App:
             #attack
             elif event.key == pygame.K_SPACE:
                 self.actionBuffer.append('player.attack.SHOOT')
+            elif event.key == pygame.K_b:
+                self.actionBuffer.append('player.attack.THROW')
 
         # implement player events
-
+    
     def on_loop(self):
         while (len(self.actionBuffer) != 0):
             actionElements = self.actionBuffer.pop().split(".")
@@ -59,12 +66,20 @@ class App:
                 print("app.py: wrong number of actionElements in actionBuffer")
 
         colliders = pygame.sprite.Group()
-        [colliders.add(i) for i in self.physEnabled]
+        #[colliders.add(i) for i in self.physEnabled]
+        colliders = self.physEnabled.copy()
 
         for element in self.physEnabled:
-            element.update(colliders)
+            element.update(self.clock, colliders)
         #self.player.addAction('attack', 'SHOOT')
         # process player events from on_event()
+        
+        frameTime = self.clock.get_time()
+
+        for element in self.inGame:
+            element.autoUpdate(frameTime)
+
+        self.clock.tick()
 
     def on_render(self):
         #pass

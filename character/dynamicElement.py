@@ -24,16 +24,15 @@ class dynamicElement(pygame.sprite.Sprite):
         self.add(physEnabled)
         #self.add(inGame)
 
-    def update(self, *args):
+    def update(self, clock, *args):
         #damage and effects are not implemented at this moment
         if len(args) > 0:
             self.checkCollision(args[0])
         self.rect.center = self.positionVect.x, self.positionVect.y
-        self.autoUpdate()
+        self.autoUpdate(clock)
         pass
 
     def render(self, displaySurface):
-        pygame.draw.circle(self.surf, (255, 0, 0), (self.rect.center[0] - self.rect.topleft[0], self.rect.center[1] - self.rect.topleft[1]), self.rect.width/2, 0)
         displaySurface.blit(self.surf, self.rect)
         pass
 
@@ -52,14 +51,18 @@ class dynamicElement(pygame.sprite.Sprite):
             self.handleCollision(collider)
 
     def handleCollision(self, collider):
+        #consider implementing down the class hierarchy
         if (self in collider.subGroup or self in collider.superGroup):
-            print(collider.__class__.__name__, "in subgroup of", self.__class__.__name__)
+            pass
+            #print(collider.__class__.__name__, "in subgroup of", self.__class__.__name__)
         elif self.breaksOnImpact:
             print(self.__class__.__name__, "breaks on impact with", collider.__class__.__name__)
             self.destroy()
         elif collider.breaksOnImpact:
             print(collider.__class__.__name__, "breaks on impact with", self.__class__.__name__)
             collider.destroy()
+
+            #revisit momentPriority
         elif collider.momentPriority >= self.momentPriority:
             print(collider.__class__.__name__, "collides with", self.__class__.__name__)
             overlap = pygame.math.Vector2(self.positionVect.x, self.positionVect.y)
@@ -71,6 +74,6 @@ class dynamicElement(pygame.sprite.Sprite):
         elif collider.momentPriority < self.momentPriority:
             collider.handleCollision(self)
             #collider.move(overlap * -1)
-            print(collider.__class__.__name__,"is pushed by",  self.__class__name__, "at", self.positionVect)
+            print(collider.__class__.__name__,"is pushed by",  self.__class__.__name__, "at", self.positionVect)
         else:
             pass
