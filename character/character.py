@@ -16,8 +16,8 @@ class character(dynamicElement):
         self.subGroup.add(self)
         self.superGroup = pygame.sprite.Group()
 
-    def autoUpdate(self, frameTime):
-        pass
+    def update(self, frameTime, colliders):
+        super(character, self).update(frameTime, colliders)
 
     def render(self, displaySurface):
         pygame.draw.circle(self.surf, (255, 0, 0), (self.rect.center[0] - self.rect.topleft[0], self.rect.center[1] - self.rect.topleft[1]), self.rect.width/2, 0)

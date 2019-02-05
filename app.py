@@ -66,19 +66,11 @@ class App:
                 print("app.py: wrong number of actionElements in actionBuffer")
 
         colliders = pygame.sprite.Group()
-        #[colliders.add(i) for i in self.physEnabled]
         colliders = self.physEnabled.copy()
-
-        for element in self.physEnabled:
-            element.update(self.clock, colliders)
-        #self.player.addAction('attack', 'SHOOT')
-        # process player events from on_event()
         
         frameTime = self.clock.get_time()
-
         for element in self.inGame:
-            element.autoUpdate(frameTime)
-
+            element.update(frameTime, colliders)
         self.clock.tick()
 
     def on_render(self):

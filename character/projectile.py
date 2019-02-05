@@ -15,10 +15,11 @@ class projectile(dynamicElement):
         self.subGroup = pygame.sprite.Group(self)
         #self.move(self.velocity)
 
-    def autoUpdate(self, time):
+    def update(self, frameTime, colliders):
         #takes in physics info
         #checkCollision() will return collider for damage
         self.move(self.velocity)
+        super(projectile, self).update(frameTime, colliders)
         #print(self.rect.center)
         pass
 

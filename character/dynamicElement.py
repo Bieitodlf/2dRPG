@@ -24,12 +24,10 @@ class dynamicElement(pygame.sprite.Sprite):
         self.add(physEnabled)
         #self.add(inGame)
 
-    def update(self, clock, *args):
+    def update(self, clock, colliders):
         #damage and effects are not implemented at this moment
-        if len(args) > 0:
-            self.checkCollision(args[0])
+        self.checkCollision(colliders)
         self.rect.center = self.positionVect.x, self.positionVect.y
-        self.autoUpdate(clock)
         pass
 
     def render(self, displaySurface):
