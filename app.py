@@ -31,25 +31,37 @@ class App:
     def on_event(self, event):
         if event.type == pygame.QUIT:
             self._running = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                self.actionBuffer.append('player.move.UP') #get key mapping. maybe clasify for easy handiling
-            elif event.key == pygame.K_DOWN:
-                self.actionBuffer.append('player.move.DOWN')
-            elif event.key == pygame.K_LEFT:
-                self.actionBuffer.append('player.move.LEFT')
-            elif event.key == pygame.K_RIGHT:
-                self.actionBuffer.append('player.move.RIGHT')
-            #end of move
-            #attack
-            elif event.key == pygame.K_SPACE:
-                self.actionBuffer.append('player.attack.SHOOT')
-            elif event.key == pygame.K_b:
-                self.actionBuffer.append('player.attack.THROW')
+        #elif event.type == pygame.KEYDOWN:
+           #if event.key == pygame.K_UP:
+           #    self.actionBuffer.append('player.move.UP') #get key mapping. maybe clasify for easy handiling
+           #elif event.key == pygame.K_DOWN:
+           #    self.actionBuffer.append('player.move.DOWN')
+           #elif event.key == pygame.K_LEFT:
+           #    self.actionBuffer.append('player.move.LEFT')
+           #elif event.key == pygame.K_RIGHT:
+           #    self.actionBuffer.append('player.move.RIGHT')
+           ##end of move
+           ##attack
+           #elif event.key == pygame.K_SPACE:
+           #    self.actionBuffer.append('player.attack.SHOOT')
+           #elif event.key == pygame.K_b:
+           #    self.actionBuffer.append('player.attack.THROW')
 
         # implement player events
     
+    def heldKeys(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_UP]:
+            self.actionBuffer.append('player.move.UP')
+        if keys[pygame.K_DOWN]:
+            self.actionBuffer.append('player.move.DOWN')
+        if keys[pygame.K_LEFT]:
+            self.actionBuffer.append('player.move.LEFT')
+        if keys[pygame.K_RIGHT]:
+            self.actionBuffer.append('player.move.RIGHT')
+
     def on_loop(self):
+        self.heldKeys()
         while (len(self.actionBuffer) != 0):
             actionElements = self.actionBuffer.pop().split(".")
             #print(actionElements)
@@ -65,7 +77,7 @@ class App:
         colliders = pygame.sprite.Group()
         colliders = self.physEnabled.copy()
         
-        frameTime = self.clock.get_time()
+        frameTime = self.clock.get_time()/1000.0
         for element in self.inGame:
             element.update(frameTime, colliders)
         self.clock.tick()

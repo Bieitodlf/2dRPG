@@ -10,21 +10,8 @@ class player(character):
         character.__init__(self, startPos, playerSize, scale, physEnabled, inGame, 3)
         self.actionBuffer = []
 
-    def actionMove(self, direction):
-        uvect = pygame.math.Vector2(0, 0)
-        if direction == 'UP':
-            uvect.x, uvect.y = 0, -1
-        elif direction == 'DOWN':
-            uvect.x, uvect.y = 0, 1
-        elif direction == 'LEFT':
-            uvect.x, uvect.y = -1, 0
-        elif direction == 'RIGHT':
-            uvect.x, uvect.y = 1, 0
-        
-        self.facingDir = uvect
-        self.move(uvect * self.speed)
-
-
+    def actionMove(self, direction, frameTime):
+        super(player, self).actionMove(direction, frameTime)
 
     def __del__(self):
         character.__del__(self)

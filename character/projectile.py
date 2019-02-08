@@ -6,8 +6,7 @@ class projectile(dynamicElement):
 
         damage = 10
         self.breaksOnImpact = True
-        self.speed = speed
-        self.velocity = pygame.math.Vector2(direction * speed)
+        self.velocity = pygame.math.Vector2(direction * speed * scale)
 
         dynamicElement.__init__(self, startPos, size, scale, physEnabled, inGame, 10, self.breaksOnImpact)
         superGroup.add(self)
@@ -18,7 +17,7 @@ class projectile(dynamicElement):
     def update(self, frameTime, colliders):
         #takes in physics info
         #checkCollision() will return collider for damage
-        self.move(self.velocity)
+        self.move(self.velocity, frameTime)
         super(projectile, self).update(frameTime, colliders)
         #print(self.rect.center)
         pass

@@ -1,4 +1,11 @@
+'''
+    dynamicElement class stores most of the physics information of the object and takes care of basic movement anc collission
+
+    need to revisit collision resolution math
+    need to replace moment priority with real system for moment transfer
+'''
 import pygame
+import math
 from terrain.floor import floor
 
 class dynamicElement(pygame.sprite.Sprite): 
@@ -24,7 +31,7 @@ class dynamicElement(pygame.sprite.Sprite):
         self.add(physEnabled)
         #self.add(inGame)
 
-    def update(self, clock, colliders):
+    def update(self, frameTime, colliders):
         #damage and effects are not implemented at this moment
         self.checkCollision(colliders)
         self.rect.center = self.positionVect.x, self.positionVect.y
@@ -34,9 +41,8 @@ class dynamicElement(pygame.sprite.Sprite):
         displaySurface.blit(self.surf, self.rect)
         pass
 
-    def move(self, moveVect):
-        self.positionVect += moveVect
-        self.rect.center = self.positionVect.x, self.positionVect.y
+    def move(self, moveVect, frameTime):
+        self.positionVect += moveVect * frameTime
 
     def checkCollision(self, colliders):
         #when colliding set self.colliding = True
@@ -68,10 +74,10 @@ class dynamicElement(pygame.sprite.Sprite):
             overlap.normalize_ip()
             minDistVect = pygame.math.Vector2(self.rect.width/2 + collider.rect.width/2, self.rect.height/2 + collider.rect.height/2)
             minDist = overlap.dot(minDistVect)
-            self.move(overlap)# * minDist)
+            self.positionVect += overlap * 4
+        
         elif collider.momentPriority < self.momentPriority:
             collider.handleCollision(self)
-            #collider.move(overlap * -1)
             print(collider.__class__.__name__,"is pushed by",  self.__class__.__name__, "at", self.positionVect)
         else:
             pass
