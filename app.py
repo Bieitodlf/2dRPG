@@ -1,10 +1,11 @@
 import pygame
 from pygame.locals import * 
 from terrain.floor import floor
+from terrain.level import level
 from character.player import player
 from character.character import character
 
-class App:
+class App(object):
 
     def __init__(self):
         self._running = True
@@ -18,34 +19,24 @@ class App:
         self.clock = pygame.time.Clock()
         self._running = True
         # call map loader in the future this responds to event
+        self.scale = 50 #world scale, make adjustable in the future
         self.inGame = pygame.sprite.Group()
         self.physEnabled = pygame.sprite.Group()
-        self.terrain = floor(self.screenRect)
-        self.scale = 100 #world scale, make adjustable in the future
-        self.terrain.load(self.scale)
-        self.player = player(self.screenRect.center, 1, self.scale, self.physEnabled, self.inGame) #pass center screen, playerSize and scale
-        self.enemy = character((self.screenRect.center[0], self.screenRect.center[1] - 200), 1, self.scale, self.physEnabled, self.inGame)
+        self.level = level(self.screenRect, self.scale)
+        self.player = player(self.screenRect.center, 1, self.scale, self.physEnabled, self.inGame, self.level.floors[0].group) #pass center screen, playerSize and scale
+        self.enemy = character((self.screenRect.center[0], self.screenRect.center[1] - 200), 1, self.scale, self.physEnabled, self.inGame, self.level.floors[0].group)
         
         self.actionBuffer = [] #stores actions onto a buffer to send to object
 
     def on_event(self, event):
         if event.type == pygame.QUIT:
             self._running = False
-        #elif event.type == pygame.KEYDOWN:
-           #if event.key == pygame.K_UP:
-           #    self.actionBuffer.append('player.move.UP') #get key mapping. maybe clasify for easy handiling
-           #elif event.key == pygame.K_DOWN:
-           #    self.actionBuffer.append('player.move.DOWN')
-           #elif event.key == pygame.K_LEFT:
-           #    self.actionBuffer.append('player.move.LEFT')
-           #elif event.key == pygame.K_RIGHT:
-           #    self.actionBuffer.append('player.move.RIGHT')
-           ##end of move
+        elif event.type == pygame.KEYDOWN:
            ##attack
-           #elif event.key == pygame.K_SPACE:
-           #    self.actionBuffer.append('player.attack.SHOOT')
-           #elif event.key == pygame.K_b:
-           #    self.actionBuffer.append('player.attack.THROW')
+           if event.key == pygame.K_SPACE:
+               self.actionBuffer.append('player.attack.SHOOT')
+           elif event.key == pygame.K_b:
+               self.actionBuffer.append('player.attack.THROW')
 
         # implement player events
     
@@ -83,11 +74,17 @@ class App:
         self.clock.tick()
 
     def on_render(self):
-        #pass
-        # draw map, players
-        self.terrain.render(self._display_surf)
-        for element in self.inGame.sprites():
-            element.render(self._display_surf)
+        #draw map floor by floor, players
+        self.level.renderBackground(self._display_surf)
+        for floorNumber, floor in self.level.floors.items():
+            floor.renderGround(self._display_surf)
+            for sprite in floor.group:
+                if self.inGame.has(sprite):
+                   sprite.render(self._display_surf)
+            floor.renderWalls(self._display_surf)
+
+        #for element in self.inGame.sprites():
+        #    element.render(self._display_surf)
         pygame.display.flip()
 
     def on_cleanup(self):

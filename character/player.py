@@ -1,17 +1,14 @@
 import pygame
-from terrain.floor import floor
-from .character import character
+from character import character
 
-class player(character):
+class player(character.character):
 
     facingDir = [0, 0]
 
-    def __init__(self, startPos, playerSize, scale, physEnabled, inGame):
-        character.__init__(self, startPos, playerSize, scale, physEnabled, inGame, 3)
+    def __init__(self, startPos, playerSize, scale, physEnabled, inGame, floorGroup):
+        super().__init__(startPos, playerSize, scale, physEnabled, inGame, floorGroup, 3)
         self.actionBuffer = []
 
-    def actionMove(self, direction, frameTime):
-        super(player, self).actionMove(direction, frameTime)
+    def actionMove(self, direction, uvect):
+        super(player, self).actionMove(direction, uvect)
 
-    def __del__(self):
-        character.__del__(self)

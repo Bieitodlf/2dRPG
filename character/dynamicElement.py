@@ -6,11 +6,10 @@
 '''
 import pygame
 import math
-from terrain.floor import floor
 
 class dynamicElement(pygame.sprite.Sprite): 
 
-    def __init__(self, startPos, size, scale, physEnabled, inGame, momentPriority, breaksOnImpact = False):
+    def __init__(self, startPos, size, scale, physEnabled, inGame, floorGroup,  momentPriority, breaksOnImpact = False):
         self.breaksOnImpact = breaksOnImpact
         self.momentPriority = momentPriority
         self.scale = scale
@@ -22,6 +21,8 @@ class dynamicElement(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.inGame = inGame
         inGame.add(self)
+        self.floorGroup = floorGroup
+        floorGroup.add(self)
         self.surf = pygame.Surface(self.rect.size, pygame.SRCALPHA, 32)
         self.physEnabled = physEnabled
         self.load(physEnabled)
@@ -29,6 +30,7 @@ class dynamicElement(pygame.sprite.Sprite):
     
     def load(self, physEnabled):
         self.add(physEnabled)
+        self.floor = 0
         #self.add(inGame)
 
     def update(self, frameTime, colliders):
@@ -81,3 +83,10 @@ class dynamicElement(pygame.sprite.Sprite):
             print(collider.__class__.__name__,"is pushed by",  self.__class__.__name__, "at", self.positionVect)
         else:
             pass
+
+    def inFloor(floor):
+        #returns a true if the element is in the specified floor
+        return floor == self.floor
+
+    def animate(self, frameTime):
+        pass
