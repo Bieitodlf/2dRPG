@@ -37,6 +37,8 @@ class App(object):
                self.actionBuffer.append('player.attack.SHOOT')
            elif event.key == pygame.K_b:
                self.actionBuffer.append('player.attack.THROW')
+            elif event.key == pygame.K_q:
+                self._running = False
 
         # implement player events
     
