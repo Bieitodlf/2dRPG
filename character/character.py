@@ -2,8 +2,8 @@ import pygame
 from character import dynamicElement, projectile, bomb
 
 class character(dynamicElement.dynamicElement):
-    def __init__(self, startPos, size, scale, physEnabled, inGame, floorGroup, momentPriority=5):
-        super().__init__(startPos, size, scale, physEnabled, inGame, floorGroup, momentPriority)
+    def __init__(self, levelRect, startPos, size, scale, physEnabled, inGame, floorGroup, momentPriority=5):
+        super().__init__(levelRect, startPos, size, scale, physEnabled, inGame, floorGroup, momentPriority)
         self.loadCharacter()
         self.actionBuffer = []
     
@@ -52,13 +52,12 @@ class character(dynamicElement.dynamicElement):
 
     def attack(self, skill, frameTime):
         if skill == 'SHOOT':
-            projectile.projectile(self.rect.center, 0.5, self.scale, self.facingDir, 2, self.physEnabled, self.inGame, self.floorGroup, self.subGroup, self, 1, 'kinetic')
+            projectile.projectile(self.levelRect, self.rect.center, 0.5, self.scale, self.facingDir, 2, self.physEnabled, self.inGame, self.floorGroup, self.subGroup, self, 1, 'kinetic')
             #print(self.subGroup.sprites())
         elif skill == 'THROW':
-            bomb.bomb(self.rect.center, 1, self.scale, self.facingDir, 5, self.physEnabled, self.inGame, self.floorGroup, self.subGroup, self, 1, 'explosive')
+            bomb.bomb(self.levelRect, self.rect.center, 1, self.scale, self.facingDir, 5, self.physEnabled, self.inGame, self.floorGroup, self.subGroup, self, 1, 'explosive')
         elif skill == 'MELE':
             pass
 
     def dealDamage(self):
         pass
-

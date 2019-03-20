@@ -9,7 +9,8 @@ import math
 
 class dynamicElement(pygame.sprite.Sprite): 
 
-    def __init__(self, startPos, size, scale, physEnabled, inGame, floorGroup,  momentPriority, breaksOnImpact = False):
+    def __init__(self, levelRect, startPos, size, scale, physEnabled, inGame, floorGroup,  momentPriority, breaksOnImpact = False):
+        self.levelRect = levelRect
         self.breaksOnImpact = breaksOnImpact
         self.momentPriority = momentPriority
         self.scale = scale

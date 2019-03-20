@@ -5,14 +5,17 @@ from terrain.floor import floor
 
 class level():
     def __init__(self, screenRect, scale):
-        self.tiled_map = load_pygame("terrain/mapTest.tmx")
-        self.width = self.tiled_map.width
-        self.height = self.tiled_map.height
+        self.tiled_map = load_pygame("terrain/testLevel.tmx")
+        width = self.tiled_map.width
+        height = self.tiled_map.height
         self.tileSize = scale
+        self.origin = (-200, -200)#(-(width * self.tileSize)/2, -(height * self.tileSize)/2)
+        self.levelRect = pygame.Rect(self.origin, (width * self.tileSize, height * self.tileSize))
+        self.originVect = pygame.math.Vector2(self.levelRect.center)
         layers = self.tiled_map.layers
-        self.backgroundSurface = pygame.Surface(screenRect.size)
+        self.backgroundSurface = pygame.Surface(self.levelRect.size)
         self.loadBackground(layers)
-        self.loadFloors(screenRect, layers)
+        self.loadFloors(self.levelRect, layers)
 
     def loadBackground(self, layers):
         for tile in layers[0].tiles(): 
@@ -33,4 +36,4 @@ class level():
             layer += 2
 
     def renderBackground(self, display):
-        display.blit(self.backgroundSurface, (0, 0))
+        display.blit(self.backgroundSurface, self.origin)

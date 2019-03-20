@@ -2,13 +2,13 @@ import pygame
 from character import dynamicElement
 
 class projectile(dynamicElement.dynamicElement):
-    def __init__(self, startPos, size, scale, direction, speed, physEnabled, inGame, floorGroup, superGroup, parent, damage, damageType):
+    def __init__(self, levelRect, startPos, size, scale, direction, speed, physEnabled, inGame, floorGroup, superGroup, parent, damage, damageType):
 
         damage = 10
         self.breaksOnImpact = True
         self.velocity = pygame.math.Vector2(direction * speed * scale)
 
-        super().__init__(startPos, size, scale, physEnabled, inGame, floorGroup, 10, self.breaksOnImpact)
+        super().__init__(levelRect, startPos, size, scale, physEnabled, inGame, floorGroup, 10, self.breaksOnImpact)
         superGroup.add(self)
         self.superGroup = superGroup
         self.subGroup = pygame.sprite.Group(self)

@@ -19,12 +19,12 @@ class App(object):
         self.clock = pygame.time.Clock()
         self._running = True
         # call map loader in the future this responds to event
-        self.scale = 50 #world scale, make adjustable in the future
+        self.scale = int(self.screenRect.width / 100) #world scale, make adjustable in the future how many tiles in a screen width
         self.inGame = pygame.sprite.Group()
         self.physEnabled = pygame.sprite.Group()
         self.level = level(self.screenRect, self.scale)
-        self.player = player(self.screenRect.center, 1, self.scale, self.physEnabled, self.inGame, self.level.floors[0].group) #pass center screen, playerSize and scale
-        self.enemy = character((self.screenRect.center[0], self.screenRect.center[1] - 200), 1, self.scale, self.physEnabled, self.inGame, self.level.floors[0].group)
+        self.player = player(self.level.levelRect, self.level.levelRect.center, 1, self.scale, self.physEnabled, self.inGame, self.level.floors[0].group) #pass center screen, playerSize and scale
+        self.enemy = character(self.level.levelRect, (self.level.levelRect.center[0], self.level.levelRect.center[1] - 200), 1, self.scale, self.physEnabled, self.inGame, self.level.floors[0].group)
         
         self.actionBuffer = [] #stores actions onto a buffer to send to object
 
@@ -32,11 +32,10 @@ class App(object):
         if event.type == pygame.QUIT:
             self._running = False
         elif event.type == pygame.KEYDOWN:
-           ##attack
-           if event.key == pygame.K_SPACE:
-               self.actionBuffer.append('player.attack.SHOOT')
-           elif event.key == pygame.K_b:
-               self.actionBuffer.append('player.attack.THROW')
+            if event.key == pygame.K_SPACE:
+                self.actionBuffer.append('player.attack.SHOOT')
+            elif event.key == pygame.K_b:
+                self.actionBuffer.append('player.attack.THROW')
             elif event.key == pygame.K_q:
                 self._running = False
 
@@ -79,14 +78,12 @@ class App(object):
         #draw map floor by floor, players
         self.level.renderBackground(self._display_surf)
         for floorNumber, floor in self.level.floors.items():
-            floor.renderGround(self._display_surf)
+            floor.renderGround(self._display_surf, self.level.origin)
             for sprite in floor.group:
                 if self.inGame.has(sprite):
                    sprite.render(self._display_surf)
-            floor.renderWalls(self._display_surf)
+            floor.renderWalls(self._display_surf, self.level.origin)
 
-        #for element in self.inGame.sprites():
-        #    element.render(self._display_surf)
         pygame.display.flip()
 
     def on_cleanup(self):

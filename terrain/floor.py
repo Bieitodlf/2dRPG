@@ -3,15 +3,15 @@ import pytmx
 from pytmx.util_pygame import load_pygame
 
 class floor(object):
-    def __init__(self, tileSize, screenRect, tiled_map, ground, walls):
+    def __init__(self, tileSize, levelRect, tiled_map, ground, walls):
         self.tileSize = tileSize
         self.width = tiled_map.width
         self.height = tiled_map.height
         self.ground = ground
         self.walls = walls
         self.group = pygame.sprite.Group()
-        self.groundSurface = pygame.Surface(screenRect.size, pygame.SRCALPHA, 32)
-        self.wallSurface = pygame.Surface(screenRect.size, pygame.SRCALPHA, 32)
+        self.groundSurface = pygame.Surface(levelRect.size, pygame.SRCALPHA, 32)
+        self.wallSurface = pygame.Surface(levelRect.size, pygame.SRCALPHA, 32)
         self.loadLayer(self.groundSurface, ground, tiled_map)
         self.loadLayer(self.wallSurface, walls, tiled_map)
 
@@ -27,8 +27,8 @@ class floor(object):
     def getTileIndices(self):
         pass
 
-    def renderGround(self, display):
-        display.blit(self.groundSurface, (0, 0))
+    def renderGround(self, display, origin):
+        display.blit(self.groundSurface, origin)
 
-    def renderWalls(self, display):
-        display.blit(self.wallSurface, (0, 0))
+    def renderWalls(self, display, origin):
+        display.blit(self.wallSurface, origin)

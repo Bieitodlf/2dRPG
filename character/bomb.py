@@ -2,11 +2,11 @@ import pygame
 from .dynamicElement import dynamicElement
 
 class bomb(dynamicElement):
-    def __init__(self, startPos, size, scale, direction, speed, physEnabled, inGame, floorGroup, superGroup, parent, damage, damageType):
+    def __init__(self, levelRect, startPos, size, scale, direction, speed, physEnabled, inGame, floorGroup, superGroup, parent, damage, damageType):
         damage = 20
         self.breaksOnImpact = False
         self.speed = 0
-        dynamicElement.__init__(self, startPos, size, scale, physEnabled, inGame, floorGroup, 10, self.breaksOnImpact)
+        dynamicElement.__init__(self, levelRect, startPos, size, scale, physEnabled, inGame, floorGroup, 10, self.breaksOnImpact)
         superGroup.add(self)
         self.superGroup = superGroup
         self.subGroup = pygame.sprite.Group(self)
