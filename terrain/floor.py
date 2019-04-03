@@ -12,6 +12,7 @@ class floor(object):
         self.group = pygame.sprite.Group()
         self.groundSurface = pygame.Surface(levelRect.size, pygame.SRCALPHA, 32)
         self.wallSurface = pygame.Surface(levelRect.size, pygame.SRCALPHA, 32)
+        self.floorSurf = pygame.Surface(levelRect.size, pygame.SRCALPHA, 32)
         self.loadLayer(self.groundSurface, ground, tiled_map)
         self.loadLayer(self.wallSurface, walls, tiled_map)
 
@@ -27,8 +28,14 @@ class floor(object):
     def getTileIndices(self):
         pass
 
-    def renderGround(self, display, origin):
-        display.blit(self.groundSurface, origin)
+    def blitToFloor(self, surf, rect):
+        self.floorSurf.blit(surf, rect)
 
-    def renderWalls(self, display, origin):
-        display.blit(self.wallSurface, origin)
+    def renderGround(self):
+        self.floorSurf.blit(self.groundSurface, (0, 0))
+
+    def renderWalls(self):
+        self.floorSurf.blit(self.wallSurface, (0, 0))
+
+    def renderFloor(self, display):
+        display.blit(self.floorSurf, (0, 0))

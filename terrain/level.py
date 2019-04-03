@@ -12,6 +12,7 @@ class level():
         self.origin = (-200, -200)#(-(width * self.tileSize)/2, -(height * self.tileSize)/2)
         self.levelRect = pygame.Rect(self.origin, (width * self.tileSize, height * self.tileSize))
         self.originVect = pygame.math.Vector2(self.levelRect.center)
+        self.levelSurf = pygame.Surface(self.levelRect.size, pygame.SRCALPHA, 32)
         layers = self.tiled_map.layers
         self.backgroundSurface = pygame.Surface(self.levelRect.size)
         self.loadBackground(layers)
@@ -35,5 +36,5 @@ class level():
             floorNumber += 1
             layer += 2
 
-    def renderBackground(self, display):
-        display.blit(self.backgroundSurface, self.origin)
+    def renderBackground(self):
+        self.levelSurf.blit(self.backgroundSurface, (0, 0))

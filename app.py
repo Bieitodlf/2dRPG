@@ -75,14 +75,17 @@ class App(object):
 
     def on_render(self):
         #draw map floor by floor, players
-        self.level.renderBackground(self._display_surf)
+        self.level.renderBackground()
         for floorNumber, floor in self.level.floors.items():
-            floor.renderGround(self._display_surf, self.level.origin)
+            floor.renderGround()
             for sprite in floor.group:
                 if self.inGame.has(sprite):
-                   sprite.render(self._display_surf)
-            floor.renderWalls(self._display_surf, self.level.origin)
+                    floor.blitToFloor(sprite.surf, sprite.rect)
+                    print(sprite, sprite.rect)
+            floor.renderWalls()
+            floor.renderFloor(self.level.levelSurf)
 
+        self._display_surf.blit(self.level.levelSurf, (0, 0))
         pygame.display.flip()
 
     def on_cleanup(self):
