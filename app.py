@@ -2,8 +2,7 @@ import pygame
 from pygame.locals import * 
 from terrain.floor import floor
 from terrain.level import level
-from character.player import player
-from character.character import character
+from character.dynamicElement import *
 
 class App(object):
 
