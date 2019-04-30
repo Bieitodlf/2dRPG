@@ -1,6 +1,7 @@
 import sys
 import sdl2
 import sdl2.ext
+import math
 from Utilities import *
 
 class Bbox():
@@ -8,15 +9,15 @@ class Bbox():
     def __init__(self, centerPos, size):
         self.centerPos = centerPos
         self.size = size
-        self.halfSize = [self.size[0]//2, self.size[1]//2]
+        self.halfSize = scalarDiv(self.size, 2)
         self.position = vectSub(self.centerPos, self.halfSize)
 
     def setSize(self, width, height):
         self.size = [width, height]
-        self.halfSize = [self.size[0]//2, self.size[1]//2]
+        self.halfSize = scalarDiv(self.size, 2)
 
         self.position = vectSub(self.centerPos, self.halfSize)
-        self.sprite.position(self.position[0], self.position[1])
+        self.sprite.position(math.floor(self.position[0]), math.floor(self.position[1]))
 
     def getSize(self):
         return self.size
@@ -24,9 +25,9 @@ class Bbox():
     def getHalfSize(self):
         return self.halfSize
 
-    def setPosition(self, posX, posY):
+    def setPosition(self, position):
         #sets the topLeft position and recalculates center
-        self.position = [posX, posY]
+        self.position = position
         self.centerPos = vectAdd(self.position, self.halfSize)
 
     def getPosition(self):
@@ -46,6 +47,8 @@ class Bbox():
         topLeft = self.getPosition()
         return (topLeft, vectAdd(topLeft, [self.size[0], 0]), vectAdd(topLeft, self.size), vectAdd(topLeft, [0, self.size[1]]))
 
+    def updatePosition(self):
+        self.position = vectSub(self.centerPos, self.halfSize)
 
 class Momentum():
     def __init__(self, velocity, mass):
@@ -72,22 +75,47 @@ class Momentum():
     def getMomentum(self):
         return self.momentum
 
+class ControlInfo():
+    def __init__(self, isPlayerControlled, isViewPortAttached):
+        self.isPlayerControlled = isPlayerControlled
+        self.isViewPortAttached = isViewPortAttached
+
 class MovementSystem(sdl2.ext.Applicator):
-    def __init__(self):
+    def __init__(self, viewPort):
         super().__init__()
-        self.componenttypes = Bbox, Momentum, sdl2.ext.Sprite
+        self.viewPort = viewPort
+        self.componenttypes = Bbox, Momentum, sdl2.ext.Sprite, ControlInfo
 
     def process(self, world, componentSets):
-        for bbox, momentum, sprite in componentSets:
-            newCenterPos = vectAdd(bbox.getCenterPos(), momentum.getVelocity())
-            bbox.setCenterPos(newCenterPos)
+        for bbox, momentum, sprite, controlinfo in componentSets:
+            oldCenterPos = bbox.getCenterPos()
+            velocity = momentum.getVelocity()
+            newCenterPos = vectAdd(bbox.getCenterPos(), velocity)
             #
             #investigate sprite object
             #
-            topLeft = bbox.getPosition()
-            sprite.position = ((topLeft[0], topLeft[1]))
+            bbox.setCenterPos(newCenterPos)
+            newTopLeft = bbox.getPosition()
+            sprite.position = int(newTopLeft[0]), int(newTopLeft[1])
+            
+            #viewPort scrolling
+            if (controlinfo.isViewPortAttached == True):
+                bounds = self.viewPort.getPlayerBounds()#player box, if outside, viewPort moves
+                delta = [0, 0]#how much it scrolls
+                direction = [signOf(velocity[0]), signOf(velocity[1])]
+                
+                #X direction check
+                if (newTopLeft[0] < bounds[0][0] and direction[0] < 0 or
+                        (newTopLeft[0] + bbox.getSize()[0]) > bounds[1][0] and direction[0] > 0): 
+                    delta = vectAdd(delta, [velocity[0], 0])
 
-
+                #Y direction check
+                if (newTopLeft[1] < bounds[0][1] and direction[1] < 0 or
+                        (newTopLeft[1] + bbox.getSize()[1]) > bounds[1][1] and direction[1] > 0):
+                    delta = vectAdd(delta, [0, velocity[1]])
+                
+                #viewPort displacement
+                self.viewPort.setCenterPos(vectAdd(self.viewPort.getCenterPos(), delta))
 
 class CollisionSystem(sdl2.ext.Applicator):
     def __init__(self):
