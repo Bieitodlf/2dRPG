@@ -37,6 +37,8 @@ def vectElementMult(vect1, vect2):
         print("cannot multiply elementwise different size vectors")
         return None
 
+<<<<<<< HEAD
+=======
 
 def vectElementDiv(vect1, vect2):
     if (vectSameLength(vect1, vect2)):
@@ -51,6 +53,7 @@ def vectElementDiv(vect1, vect2):
         print("cannot divide elementwise different size vectors")
         return None
 
+>>>>>>> master
 def vectAbs(vect):
     result = []
     for dimension in vect:
@@ -69,6 +72,8 @@ def scalarProduct(vect, scalar):
         result.append(dimension * scalar)
     return result
 
+<<<<<<< HEAD
+=======
 
 def scalarDiv(vect, scalar, integer=False):
     if scalar != 0:
@@ -83,6 +88,7 @@ def scalarDiv(vect, scalar, integer=False):
         print("division by 0 is undefined")
         return None
       
+>>>>>>> master
 class vector():
     def __init__(initData):
         pass

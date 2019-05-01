@@ -1,7 +1,10 @@
 import sys
 import sdl2
 import sdl2.ext
+<<<<<<< HEAD
+=======
 import math
+>>>>>>> master
 from Utilities import *
 
 class Bbox():
@@ -9,15 +12,26 @@ class Bbox():
     def __init__(self, centerPos, size):
         self.centerPos = centerPos
         self.size = size
+<<<<<<< HEAD
+        self.halfSize = [self.size[0]//2, self.size[1]//2]
+=======
         self.halfSize = scalarDiv(self.size, 2)
+>>>>>>> master
         self.position = vectSub(self.centerPos, self.halfSize)
 
     def setSize(self, width, height):
         self.size = [width, height]
+<<<<<<< HEAD
+        self.halfSize = [self.size[0]//2, self.size[1]//2]
+
+        self.position = vectSub(self.centerPos, self.halfSize)
+        self.sprite.position(self.position[0], self.position[1])
+=======
         self.halfSize = scalarDiv(self.size, 2)
 
         self.position = vectSub(self.centerPos, self.halfSize)
         self.sprite.position(math.floor(self.position[0]), math.floor(self.position[1]))
+>>>>>>> master
 
     def getSize(self):
         return self.size
@@ -25,9 +39,15 @@ class Bbox():
     def getHalfSize(self):
         return self.halfSize
 
+<<<<<<< HEAD
+    def setPosition(self, posX, posY):
+        #sets the topLeft position and recalculates center
+        self.position = [posX, posY]
+=======
     def setPosition(self, position):
         #sets the topLeft position and recalculates center
         self.position = position
+>>>>>>> master
         self.centerPos = vectAdd(self.position, self.halfSize)
 
     def getPosition(self):
@@ -47,8 +67,11 @@ class Bbox():
         topLeft = self.getPosition()
         return (topLeft, vectAdd(topLeft, [self.size[0], 0]), vectAdd(topLeft, self.size), vectAdd(topLeft, [0, self.size[1]]))
 
+<<<<<<< HEAD
+=======
     def updatePosition(self):
         self.position = vectSub(self.centerPos, self.halfSize)
+>>>>>>> master
 
 class Momentum():
     def __init__(self, velocity, mass):
@@ -75,6 +98,24 @@ class Momentum():
     def getMomentum(self):
         return self.momentum
 
+<<<<<<< HEAD
+class MovementSystem(sdl2.ext.Applicator):
+    def __init__(self):
+        super().__init__()
+        self.componenttypes = Bbox, Momentum, sdl2.ext.Sprite
+
+    def process(self, world, componentSets):
+        for bbox, momentum, sprite in componentSets:
+            newCenterPos = vectAdd(bbox.getCenterPos(), momentum.getVelocity())
+            bbox.setCenterPos(newCenterPos)
+            #
+            #investigate sprite object
+            #
+            topLeft = bbox.getPosition()
+            sprite.position = ((topLeft[0], topLeft[1]))
+
+
+=======
 class ControlInfo():
     def __init__(self, isPlayerControlled, isViewPortAttached):
         self.isPlayerControlled = isPlayerControlled
@@ -116,6 +157,7 @@ class MovementSystem(sdl2.ext.Applicator):
                 
                 #viewPort displacement
                 self.viewPort.setCenterPos(vectAdd(self.viewPort.getCenterPos(), delta))
+>>>>>>> master
 
 class CollisionSystem(sdl2.ext.Applicator):
     def __init__(self):

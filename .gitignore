@@ -1,3 +1,4 @@
 *.pyc
 tests/*
 SDL2/*
+pyenv
