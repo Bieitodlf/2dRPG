@@ -1,10 +1,7 @@
 import sys
 import sdl2
 import sdl2.ext
-<<<<<<< HEAD
-=======
 import math
->>>>>>> master
 from Utilities import *
 
 class Bbox():
@@ -12,26 +9,15 @@ class Bbox():
     def __init__(self, centerPos, size):
         self.centerPos = centerPos
         self.size = size
-<<<<<<< HEAD
-        self.halfSize = [self.size[0]//2, self.size[1]//2]
-=======
         self.halfSize = scalarDiv(self.size, 2)
->>>>>>> master
         self.position = vectSub(self.centerPos, self.halfSize)
 
     def setSize(self, width, height):
         self.size = [width, height]
-<<<<<<< HEAD
-        self.halfSize = [self.size[0]//2, self.size[1]//2]
-
-        self.position = vectSub(self.centerPos, self.halfSize)
-        self.sprite.position(self.position[0], self.position[1])
-=======
         self.halfSize = scalarDiv(self.size, 2)
 
         self.position = vectSub(self.centerPos, self.halfSize)
         self.sprite.position(math.floor(self.position[0]), math.floor(self.position[1]))
->>>>>>> master
 
     def getSize(self):
         return self.size
@@ -39,15 +25,9 @@ class Bbox():
     def getHalfSize(self):
         return self.halfSize
 
-<<<<<<< HEAD
-    def setPosition(self, posX, posY):
-        #sets the topLeft position and recalculates center
-        self.position = [posX, posY]
-=======
     def setPosition(self, position):
         #sets the topLeft position and recalculates center
         self.position = position
->>>>>>> master
         self.centerPos = vectAdd(self.position, self.halfSize)
 
     def getPosition(self):
@@ -67,11 +47,8 @@ class Bbox():
         topLeft = self.getPosition()
         return (topLeft, vectAdd(topLeft, [self.size[0], 0]), vectAdd(topLeft, self.size), vectAdd(topLeft, [0, self.size[1]]))
 
-<<<<<<< HEAD
-=======
     def updatePosition(self):
         self.position = vectSub(self.centerPos, self.halfSize)
->>>>>>> master
 
 class Momentum():
     def __init__(self, velocity, mass):
@@ -98,24 +75,6 @@ class Momentum():
     def getMomentum(self):
         return self.momentum
 
-<<<<<<< HEAD
-class MovementSystem(sdl2.ext.Applicator):
-    def __init__(self):
-        super().__init__()
-        self.componenttypes = Bbox, Momentum, sdl2.ext.Sprite
-
-    def process(self, world, componentSets):
-        for bbox, momentum, sprite in componentSets:
-            newCenterPos = vectAdd(bbox.getCenterPos(), momentum.getVelocity())
-            bbox.setCenterPos(newCenterPos)
-            #
-            #investigate sprite object
-            #
-            topLeft = bbox.getPosition()
-            sprite.position = ((topLeft[0], topLeft[1]))
-
-
-=======
 class ControlInfo():
     def __init__(self, isPlayerControlled, isViewPortAttached):
         self.isPlayerControlled = isPlayerControlled
@@ -157,7 +116,6 @@ class MovementSystem(sdl2.ext.Applicator):
                 
                 #viewPort displacement
                 self.viewPort.setCenterPos(vectAdd(self.viewPort.getCenterPos(), delta))
->>>>>>> master
 
 class CollisionSystem(sdl2.ext.Applicator):
     def __init__(self):
@@ -271,21 +229,27 @@ class CollisionSystem(sdl2.ext.Applicator):
         overlap = vectSub(minDistance, vectAbs(collDistance))
         minDistance = scalarAdd(minDistance, 1)#ensures that there is no collision after the correction
         correction = vectElementMult(minDistance, [signOf(direction[0]), signOf(direction[1])])
+#######################################
+#Unused Code, alternative resolution method using velocity instead of position
+#######################################
         #if else chain checks which direction the object was moving in relation with the inmovable object
-        if (abs(direction[0]) > abs(direction[1])):#collision in the X direction
-            movableBox.setCenterPos([inmovableBox.getCenterPos()[0] + correction[0], movableBox.getCenterPos()[1]])
-            
-        elif (abs(direction[0]) < abs(direction[1])):#collision in the Y direction
+       #if (abs(direction[0]) > abs(direction[1])):#collision in the X direction
+       #    movableBox.setCenterPos([inmovableBox.getCenterPos()[0] + correction[0], movableBox.getCenterPos()[1]])
+       #    
+       #elif (abs(direction[0]) < abs(direction[1])):#collision in the Y direction
+       #    movableBox.setCenterPos([movableBox.getCenterPos()[0], inmovableBox.getCenterPos()[1] + correction[1]])
+
+       #elif (abs(direction[0]) == abs(direction[1])):#collision is diagonal
+########################################
+#End Unused Code
+########################################
+            #smallest overlap direction must be the collision direction
+        if (abs(overlap[0]) > abs(overlap[1])):#collision in Y direction
             movableBox.setCenterPos([movableBox.getCenterPos()[0], inmovableBox.getCenterPos()[1] + correction[1]])
 
-        elif (abs(direction[0]) == abs(direction[1])):#collision is diagonal
-            #smallest overlap direction must be the collision direction
-            if (abs(overlap[0]) > abs(overlap[1])):#collision in Y direction
-                movableBox.setCenterPos([movableBox.getCenterPos()[0], inmovableBox.getCenterPos()[1] + correction[1]])
+        elif (abs(overlap[0]) < abs(overlap[1])):#collision in X direction
+            movableBox.setCenterPos([inmovableBox.getCenterPos()[0] + correction[0], movableBox.getCenterPos()[1]])
 
-            elif (abs(overlap[0]) < abs(overlap[1])):#collision in X direction
-                movableBox.setCenterPos([inmovableBox.getCenterPos()[0] + correction[0], movableBox.getCenterPos()[1]])
-
-            else: #collision is diagonal against a corner
-                print("corner")#Broken. Fix, no collision if collision is directly in the corner and diagonal.
-                #movableBox.setCenterPos(vectSub(inmovableBox.getCenterPos(), correction))
+        else: #collision is diagonal against a corner
+            print("corner")#Broken. Fix, no collision if collision is directly in the corner and diagonal.
+            #movableBox.setCenterPos(vectSub(inmovableBox.getCenterPos(), correction))
